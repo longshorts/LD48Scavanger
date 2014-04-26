@@ -1,21 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="33" height="16" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="indoorterrain_tiles" tilewidth="32" tileheight="32">
-  <image source="../images/indoorterrain_tiles.png" width="192" height="128"/>
+  <image source="../images/indoorterrain_tiles.png" width="192" height="160"/>
+  <tile id="0">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="13">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="19">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="20">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="notboundry" value=""/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="background" width="33" height="16">
   <data encoding="base64" compression="zlib">
-   eJwTY2BgEBvFo3gUj+JRPIpH8SgmAQMAmfUtYQ==
+   eJwTY2BgEBvFo3gUj+JhgJlIwAPt1lE8ioc6BgC2uCyF
   </data>
  </layer>
  <layer name="objects" width="33" height="16">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUUBOwADErELMNoBu4gJgbiHkG0A0CQCwIxEID6IZRMApGAe0AAKhTAGQ=
+   eJxjYBgFo2AUUBOwADErELMNoBu4gJgbiHkG0A0CQCwIxEID6IZRQHsgPsTMHQXUAwD7swCS
   </data>
  </layer>
  <layer name="forground" width="33" height="16">
   <data encoding="base64" compression="zlib">
-   eJzjYGBg4BhEmI+OGJv9nAz0Beyjbhh1w6gbqOIGYSAWIQGLkugGUJnBT7pXKAK8DKhl1UACXG4Qp6Gd6GbD3MA0gHig68jBhAHGUggr
+   eJzjYGBg4BhEmI+OGJv9nEAsSUfMPuqGUTeMuoEqbhAGYhESsCiJbgCVGfx0DgdeBtSyihg9xKoj1Qx8bkAXp7UbmAYQD3QdOZgwAIGiJCw=
   </data>
  </layer>
 </map>

@@ -1,27 +1,31 @@
 package com.ld48.scavenger;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.ld48.scavenger.assets.Assets;
+import com.ld48.scavenger.screens.BunkerRoom;
 
-public class ScavengerGame extends ApplicationAdapter {
+public class ScavengerGame extends Game {
 	SpriteBatch batch;
 	Texture img;
 	
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		Assets.loadAll();
+		Assets.manager.finishLoading();
+		
+		this.setScreen(new BunkerRoom());
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
+		super.render();
+	}
+	
+	@Override
+	public void dispose(){
+		Assets.disposeAll();
+		super.dispose();
 	}
 }
