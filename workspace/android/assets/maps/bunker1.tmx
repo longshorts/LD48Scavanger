@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="120" height="40" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="indoorterrain_tiles" tilewidth="32" tileheight="32">
+  <image source="indoorterrain_tiles.png" width="192" height="160"/>
+  <terraintypes>
+   <terrain name="New Terrain" tile="-1"/>
+  </terraintypes>
+  <tile id="0">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="13">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="19">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="20">
+   <properties>
+    <property name="boundry" value=""/>
+   </properties>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="loot" value=""/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="notboundry" value=""/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="background" width="120" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztw0ENAAAMA6FTUf9S52IvSFg1VVVVVVVVVVVVVVVVVVVVVVVVfXrOvZyQ
+  </data>
+ </layer>
+ <layer name="objects" width="120" height="40">
+  <data encoding="base64" compression="zlib">
+   eJzt1yEOgEAQBMETgADEgeH/P2UcL7gskKqk/cjd1gAAAAAAvumqHgAAvJpbAR5TmtNSPYQh1rSlvXoIQ/R0pLN6CAD8lN8RAAAAAAAAAOrcu1EAqQ==
+  </data>
+ </layer>
+ <layer name="forground" width="120" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztmctywyAMRUn6sPtw+ki66P//aFmUGY8qsAKiIvJdnEVsjw06IAGZQwgzAAAAAABwwUkBy/ZYx29kniLfCkyG7dH69oi0zrs3Jb9L0JlL8NsWi960xrpmvMGvrV9p/azNJfBr51fSxqng9hA5rrhj7lt7uHW/h0xc6bVav6fCd2kOoONgCX7X0Sl2aYxz8d6aE5fI18bzE+OJu0bj3bJ+W7uVjmOPefrI/N5i/fw1cabv6JU/aM7dg1+NMwiax7i40XonyR893dLvcHXi1v1qx3ESvFcSK+12ldZKl1+4+pvuwe9fd7n628NvaS1ccus9P486f+cgq/elXK9ZB+B32+9ZEG/L/qP+ts/fZYA+U9I830v9Pa/6xVHa02rV39HG90ht7tE/KekMonT2MFKs4LdM7iyRe06y3rHsP+ovP66l5/zWfc0h2f9at7GFa/YhuX1Jzf5lBLzn570Dv76BX9/Ar2+o3/vIQ+QRfl1A/T5HXiKv8OsC6vc98hH5hF831P4/BQAAAAAAAAAAgP/jBxljxwk=
+  </data>
+ </layer>
+ <objectgroup name="doors" width="120" height="40">
+  <object name="door0" type="door" x="496" y="570" width="61" height="69">
+   <properties>
+    <property name="tobunker" value="0"/>
+   </properties>
+  </object>
+  <object name="door1" type="door" x="1866" y="441" width="73" height="71">
+   <properties>
+    <property name="tobunker" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

@@ -1,5 +1,7 @@
 package com.ld48.scavenger.npcs;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -12,16 +14,25 @@ import com.ld48.scavenger.util.GameUtil;
 public class Bullet extends Sprite {
 	
 	private Vector2 velocity = new Vector2();
-	private float speed = 60 * 8;
+	private float speed = 60 * 4;
 	private BunkerRoom bunkerRoom;
 	private TiledMapTileLayer collisionLayer;
 	
-	private static final String colProperty = "boundry";
 	private static Texture tex = new Texture("tilesets/bullet_image.png");
 	
-	public Bullet(float x, float y, int direction, TiledMapTileLayer collisionLayer, BunkerRoom screen){
+	public Bullet(float x, float y, boolean direction, TiledMapTileLayer collisionLayer, BunkerRoom screen){
 		super(new Sprite(tex));
-		bunkerRoom = screen;
+		this.collisionLayer = collisionLayer;
+		this.bunkerRoom = screen;
+		
+		this.setPosition(x, y);
+		
+		if(direction){
+			velocity.x = speed;
+		} else {
+			velocity.x = -speed;
+			this.flip(true, false);
+		}
 	}
 	
 	@Override
@@ -31,20 +42,21 @@ public class Bullet extends Sprite {
 	}
 
 	private void update(float delta) {
-		float oldx = getX(), oldy = getY();
+		float oldx = getX();
 		
 		//React to zombie collision
-		Zombie[] zombies = bunkerRoom.getZombies();	
-		for(int i = 0; i < zombies.length; i++){
-			if(GameUtil.checkCollisionRect(this, zombies[i])){
-				kill(zombies[i]);
+		ArrayList<Zombie> zombies = bunkerRoom.getZombies();	
+		for(int i = 0; i < zombies.size(); i++){
+			if(GameUtil.checkCollisionRect(this, zombies.get(i)) && !zombies.get(i).dead){
+				kill(zombies.get(i));
+				return;
 			}
 		}
 		
 		//React to wall collision
 		if(GameUtil.checkCollisionX(this, velocity, collisionLayer)){
 			setX(oldx);
-			velocity.x = 0;
+			bunkerRoom.getBullets().remove(this);
 		} else {
 			setX(getX() + velocity.x * delta);	//move on x
 		}
@@ -53,5 +65,9 @@ public class Bullet extends Sprite {
 
 	private void kill(Zombie zombie) {
 		zombie.die();
+		
+		if(!bunkerRoom.getBullets().remove(this)){
+			System.out.println("Bullet Not removed!");
+		}
 	}
 }

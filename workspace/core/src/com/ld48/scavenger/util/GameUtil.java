@@ -53,6 +53,50 @@ public class GameUtil {
 				
 	}
 	
+	public static boolean checkCollisionY(Sprite collider, Vector2 velocity, TiledMapTileLayer collisionLayer){
+		float tileWidth = collisionLayer.getTileWidth(), tileHeight = collisionLayer.getTileHeight();
+		boolean collisionY = false;
+		
+		
+		if(velocity.y < 0){
+			//bottom left
+			collisionY = collisionLayer.getCell(
+					(int) ((collider.getX()+1) / tileWidth), 
+					(int)(collider.getY() / tileHeight)).getTile().getProperties().containsKey(property_boundry);
+			
+			//bottom middle
+			if(!collisionY)
+				collisionY = collisionLayer.getCell(
+						(int) ((collider.getX() + collider.getWidth() / 2) / tileWidth), 
+						(int)(collider.getY() / tileHeight)).getTile().getProperties().containsKey(property_boundry);
+			
+			//bottom right
+			if(!collisionY)
+				collisionY = collisionLayer.getCell(
+						(int) (((collider.getX()-1) + collider.getWidth()) / tileWidth), 
+						(int)(collider.getY() / tileHeight)).getTile().getProperties().containsKey(property_boundry);
+			
+		}else if(velocity.y > 0){
+			//top left
+			collisionY = collisionLayer.getCell(
+					(int) ((collider.getX()+1) / tileWidth), 
+					(int)((collider.getY() + collider.getHeight()) / tileHeight)).getTile().getProperties().containsKey(property_boundry);
+			
+			//top middle
+			if(!collisionY)
+				collisionY = collisionLayer.getCell(
+						(int) ((collider.getX() + collider.getWidth() / 2) / tileWidth), 
+						(int)((collider.getY() + collider.getHeight()) / tileHeight)).getTile().getProperties().containsKey(property_boundry);
+			
+			//top right
+			if(!collisionY)
+				collisionY = collisionLayer.getCell(
+						(int) (((collider.getX()-1) + collider.getWidth()) / tileWidth), 
+						(int)((collider.getY() + collider.getHeight()) / tileHeight)).getTile().getProperties().containsKey(property_boundry);
+		}
+		return collisionY;
+	}
+	
 	public static boolean checkCollisionRect(Sprite a, Sprite b){
 		Rectangle ra = a.getBoundingRectangle();
 		Rectangle rb = b.getBoundingRectangle();

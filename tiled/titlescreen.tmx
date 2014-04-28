@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="20" height="14" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="indoorterrain_tiles" tilewidth="32" tileheight="32">
+  <image source="../images/indoorterrain_tiles.png" width="192" height="160"/>
+ </tileset>
+ <tileset firstgid="31" name="player_walkani" tilewidth="32" tileheight="64">
+  <image source="../images/player_walkani.png" width="128" height="64"/>
+ </tileset>
+ <tileset firstgid="35" name="zombie_tiles" tilewidth="32" tileheight="64">
+  <image source="../images/zombie_tiles.png" width="96" height="64"/>
+ </tileset>
+ <layer name="bacground" width="20" height="14">
+  <data encoding="base64" compression="zlib">
+   eJwTY2BgEBvFo3gUj2IaYADajBgR
+  </data>
+ </layer>
+ <layer name="forground" width="20" height="14">
+  <data encoding="base64" compression="zlib">
+   eJzNk9kKgCAQRW+22UrLQ8/hj/rpjWQRKiE1UMJhVPCMjKMEIH9Oz4RxVeAbJYMvI3KiYPLVREO0DL4V0APFkZhe+GZCBAj5lkhnB/99XV9i86QP7gzHZ1zXnjRORfVRezzmWvn757q0ZwXCfR6q0R1f/8sYNl7aCiI=
+  </data>
+ </layer>
+</map>

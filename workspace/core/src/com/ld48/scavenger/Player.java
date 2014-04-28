@@ -9,13 +9,24 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
+import com.ld48.scavenger.assets.Assets;
+import com.ld48.scavenger.npcs.Bullet;
+import com.ld48.scavenger.screens.BunkerRoom;
 
 public class Player extends Sprite implements InputProcessor{
 	
+	//Game variables
+	public int food = 5;
+	public int ammo = 5;
+	public float hunger = 1;
+	public boolean dead = false;
+	private float hungerRate = 0.05f;
+	
 	private Vector2 velocity = new Vector2();
 	
-	private float maxSpeed = 60 * 2, gravity = 60 * 1.8f;
+	private float maxSpeed = 60 * 2, gravity = 60 * 8.0f, jumpSpeed = 60 * 5;
 	private TiledMapTileLayer collisionLayer;
 	private boolean canJump = true;
 	private static final String colProperty = "boundry";
@@ -32,12 +43,13 @@ public class Player extends Sprite implements InputProcessor{
 	TextureRegion currentFrame;
 	
 	float walkStateTime, jumpStateTime;
+
+	private BunkerRoom room;
 	
 	private static TextureRegion tex = new TextureRegion(new Texture("tilesets/player_walkani.png"), 0, 0, 32, 64);
 
-	public Player(Sprite sprite, TiledMapTileLayer collisionLayer){
+	public Player(Sprite sprite){
 		super(new Sprite(tex));
-		this.collisionLayer = collisionLayer;
 		
 		animationSheet = new Texture("tilesets/player_tiles.png");
 		TextureRegion[][] tmp = TextureRegion.split(animationSheet, animationSheet.getWidth()/FRAME_COLS, animationSheet.getHeight()/FRAME_ROWS);
@@ -65,14 +77,27 @@ public class Player extends Sprite implements InputProcessor{
 	}
 
 	private void update(float delta) {
+		//Process hunger
+		if(!dead){
+			hunger -= hungerRate * delta;
+			if(hunger <= 0){
+				food--;
+				if(food <= 0){
+					die();
+				}
+				if(!dead)hunger = 1;
+			}
+		}
+		
+		
 		//Increase by gravity
 		velocity.y -= gravity * delta;
 		
 		//clamp velocity
-		if(velocity.y > maxSpeed)
-			velocity.y = maxSpeed;
-		else if(velocity.y < -maxSpeed)
-			velocity.y = -maxSpeed;
+		if(velocity.y > jumpSpeed)
+			velocity.y = jumpSpeed;
+		else if(velocity.y < -jumpSpeed)
+			velocity.y = -jumpSpeed;
 				
 		float oldx = getX(), oldy = getY();
 		
@@ -116,7 +141,6 @@ public class Player extends Sprite implements InputProcessor{
 			this.setRegion(currentFrame);
 		} 
 		if(velocity.x < 0) this.setFlip(true, false);
-		
 		
 	}
 	
@@ -171,7 +195,6 @@ public class Player extends Sprite implements InputProcessor{
 		float tileWidth = collisionLayer.getTileWidth(), tileHeight = collisionLayer.getTileHeight();
 		boolean collisionY = false;
 		
-		//System.out.println("Sprite X: " + getX() + )
 		
 		if(velocity.y < 0){
 			//bottom left
@@ -223,13 +246,89 @@ public class Player extends Sprite implements InputProcessor{
 		return collisionY;
 	}
 
+	private void shoot(){
+		//Check if there is still ammo
+		if(ammo <= 0){
+			return;
+		} else {
+			ammo--;
+		}
+		
+		float x = 0;
+		if(this.isFlipX()){
+			x = getX();
+		} else {
+			x = getX() + getWidth();
+		}
+		float y = getY() + (getHeight() / 2) + 4;
+		Bullet b = new Bullet(x, y, !isFlipX(), collisionLayer, room);
+		room.getBullets().add(b);
+		
+		Assets.manager.get(Assets.gun_wav).play();
+	}
+	
+	public void die(){
+		if(!dead){
+			Assets.manager.get(Assets.death_wav).play();
+			velocity.x = 0;
+		}
+		dead = true;
+	}
+	
+	public void setStartPosition(float x, float y) {
+		setPosition(x * getCollisionLayer().getTileWidth(), (getCollisionLayer().getHeight() - (y+1)) * getCollisionLayer().getTileHeight());
+	}
+	
+	public void revive(){
+		if(dead){
+			food = 5;
+			ammo = 5;
+			hunger = 1;
+			dead = false;
+		}
+	}
+	
+	private void interact(){
+		System.out.println("x" + getX() + "y" + getY());
+		TiledMapTileLayer objects = room.getObjectLayer();
+		TiledMapTileLayer background = room.getBackgroundLayer();
+		float tileWidth = objects.getTileWidth(), tileHeight = objects.getTileHeight();
+		boolean loot = false;
+		Cell c;
+		Cell back_c;
+		
+		try{
+			c = objects.getCell(
+					(int) ((getX() + (getWidth() / 2)) / tileWidth), 
+					(int)((getY() + (getHeight()/4)) / tileHeight));
+			back_c = background.getCell(
+					(int) ((getX() + (getWidth() / 2)) / tileWidth), 
+					(int)((getY() + (getHeight()/4)) / tileHeight));
+			loot = c.getTile().getProperties().containsKey("loot");
+		} catch(NullPointerException e){
+			loot = false;
+			return;
+		}
+		
+		if(loot){
+			Assets.manager.get(Assets.pickup_wav).play();
+			food += 2;
+			ammo += 2;
+			c.setTile(back_c.getTile());
+		}
+	}
+	
 	@Override
 	public boolean keyDown(int keycode) {
+		if(dead){
+			return false;
+		}
 		switch(keycode){
 		case Keys.W:
 			if(canJump){
-				velocity.y = maxSpeed;
+				velocity.y = jumpSpeed;
 				canJump = false;
+				Assets.manager.get(Assets.jump_wav).play();
 			}
 			break;
 		case Keys.A:
@@ -238,12 +337,22 @@ public class Player extends Sprite implements InputProcessor{
 		case Keys.D:
 			velocity.x = maxSpeed;
 			break;
+		case Keys.SPACE:
+			shoot();
+			break;
+		case Keys.E:
+			interact();
+			break;
 		}
+		
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
+		if(dead){
+			return false;
+		}
 		switch(keycode){
 		case Keys.A:
 		case Keys.D:
@@ -329,6 +438,15 @@ public class Player extends Sprite implements InputProcessor{
 
 	public static void setTex(TextureRegion tex) {
 		Player.tex = tex;
+	}
+
+	public BunkerRoom getRoom() {
+		return room;
+	}
+
+	public void setRoom(BunkerRoom room) {
+		this.room = room;
+		this.collisionLayer = room.getCollisionLayer();
 	}
 	
 }

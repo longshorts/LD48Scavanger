@@ -1,5 +1,7 @@
 package com.ld48.scavenger.npcs;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -8,11 +10,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.ld48.scavenger.Player;
+import com.ld48.scavenger.assets.Assets;
+import com.ld48.scavenger.item.Item;
+import com.ld48.scavenger.screens.BunkerRoom;
+import com.ld48.scavenger.util.GameUtil;
 
 public class Zombie extends Sprite{
 	
 	private Vector2 velocity = new Vector2();
-	private boolean dead = false;
+	public boolean dead = false;
+	private static final float deathTimer = 5f;
+	private float currentDeathTimer = deathTimer;
+	
+	private BunkerRoom bunkerRoom;
 	
 	private float maxSpeed = 60 * 2, gravity = 60 * 1.8f;
 	private TiledMapTileLayer collisionLayer;
@@ -22,10 +32,11 @@ public class Zombie extends Sprite{
 	private static TextureRegion passive_tex = new TextureRegion(new Texture("tilesets/zombie_tiles.png"), 0, 0, 32, 64);
 	private static TextureRegion alert_tex = new TextureRegion(new Texture("tilesets/zombie_tiles.png"), 64, 0, 32, 64);
 	
-	public Zombie(Player player, TiledMapTileLayer collisionLayer){
+	public Zombie(Player player, BunkerRoom bunkerRoom){
 		super(new Sprite(passive_tex));
-		this.collisionLayer = collisionLayer;
+		this.collisionLayer = bunkerRoom.getCollisionLayer();
 		this.player = player;
+		this.bunkerRoom = bunkerRoom;
 		velocity.x = maxSpeed / 2;
 	}
 	
@@ -37,9 +48,28 @@ public class Zombie extends Sprite{
 
 	private void update(float delta) {
 		
+		//Check if dead
+		if(dead){
+			this.setAlpha(this.getColor().a * (currentDeathTimer / deathTimer));
+			currentDeathTimer -= delta;
+			if(currentDeathTimer <= 0){
+				//passive_tex.getTexture().dispose();
+				//alert_tex.getTexture().dispose();
+				bunkerRoom.getZombies().remove(this);
+				return;
+			}
+			return;
+		}
+		
+		//Check if touching player
+		if(GameUtil.checkCollisionRect(this, player)){
+			player.die();
+		}
+		
 		//Begin AI
 		if(player.getY()+(player.getHeight()/2) < getY()+getHeight() &&
-				player.getY()+(player.getHeight()/2) > getY()){
+				player.getY()+(player.getHeight()/2) > getY()
+				&& !player.dead){
 			pursue();
 		} else {
 			wander();
@@ -82,6 +112,12 @@ public class Zombie extends Sprite{
 	}
 
 	private void wander() {
+		Random rand = new Random();
+		int randNum = rand.nextInt((1000 - 1) + 1) + 1;
+		
+		//Randomise movement
+		if(randNum <= 5) velocity.x = -velocity.x;
+		
 		if(velocity.x > 0) velocity.x = maxSpeed / 2;
 		else if(velocity.x < 0) velocity.x = -(maxSpeed / 2);
 		else {
@@ -101,7 +137,20 @@ public class Zombie extends Sprite{
 	}
 	
 	public void die(){
+		if(!dead){
+			//Spawn loot
+			Item item = new Item(Item.ItemType.FOOD, bunkerRoom);
+			item.setTexture(new Texture("tilesets/items_large_tiles.png"));
+			item.spawn(getX()+(getWidth()/2), getY()+(getHeight()/2), bunkerRoom);
+		
+			Assets.manager.get(Assets.hit_wav).play();
+		}
+		
 		dead = true;
+	}
+	
+	public void setStartPosition(float x, float y) {
+		setPosition(x * getCollisionLayer().getTileWidth(), (getCollisionLayer().getHeight() - (y+1)) * getCollisionLayer().getTileHeight());
 	}
 	
 	/**Check for collision on X axis**/
@@ -194,5 +243,13 @@ public class Zombie extends Sprite{
 						(int)((getY() + getHeight()) / tileHeight)).getTile().getProperties().containsKey(colProperty);
 		}
 		return collisionY;
+	}
+
+	public TiledMapTileLayer getCollisionLayer() {
+		return collisionLayer;
+	}
+
+	public void setCollisionLayer(TiledMapTileLayer collisionLayer) {
+		this.collisionLayer = collisionLayer;
 	}
 }
